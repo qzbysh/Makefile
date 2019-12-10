@@ -62,11 +62,11 @@ endif
 
 
 ifeq ($(debug), y)
-    CFLAGS += -Wall -Wextra  -D DEBUG  -g
-    CXXFLAGS += -Wall -Wextra  -D DEBUG  -g
+    CFLAGS += -Wall -Wextra -Wfatal-errors -D DEBUG  -g
+    CXXFLAGS += -Wall -Wextra -Wfatal-errors -D DEBUG  -g
 else
-    CFLAGS += -Wall -Wextra  -D NDEBUG -O3
-    CXXFLAGS += -Wall -Wextra  -D NDEBUG -O3
+    CFLAGS += -Wall -Wextra -Wfatal-errors -D NDEBUG -O3
+    CXXFLAGS += -Wall -Wextra -Wfatal-errors -D NDEBUG -O3
 endif
 
 

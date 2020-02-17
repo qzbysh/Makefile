@@ -117,7 +117,7 @@ install:
 # Removes all build files
 .PHONY: clean
 clean: 
-	@$(NQ) "Clear build directory of $(TARGET)."
+	@$(NQ) "Clear build directory of $(TARGET)"
 	$(Q)$(RM) -r $(BUILD_DIR)
 
 

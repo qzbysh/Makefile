@@ -40,9 +40,7 @@ ARFLAGS := cr
 
 # Define the installation command package
 define run_install
-  install -v -d destination
-  install -v -p -D source destination
-  install -v -p -D -m 0755 source destination
+  install -DCv $(BUILD_DIR)$(TARGET) -t ../lib
 endef
 #### END PROJECT SETTINGS ####
 
@@ -113,7 +111,7 @@ run:
 
 .PHONY: install
 install:
-	$(run_install)
+	@$(run_install)
 
 
 # Removes all build files

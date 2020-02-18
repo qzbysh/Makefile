@@ -106,7 +106,7 @@ all: $(TARGET)
 
 .PHONY: run
 run:
-	$(Q)./$(BUILD_DIR)/$(TARGET)
+	$(Q)./$(BUILD_DIR)$(TARGET) || true
 
 
 .PHONY: install

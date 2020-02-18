@@ -88,19 +88,19 @@ all: $(TARGET)
 
 # Create static library
 %.a: $(OBJECTS)
-	@$(NQ) "Generating static lib file..."  $@
+	@$(NQ) "Generating static lib file -> " $@
 	$(Q)$(AR) $(ARFLAGS) $(BUILD_DIR)$@ $^
 
 
 # Create dynamic library
 %.so: $(OBJECTS)
-	@$(NQ) "Generating dynamic lib file..." $@
+	@$(NQ) "Generating dynamic lib file -> " $@
 	$(Q)$(CXX) $^ -o $(BUILD_DIR)$@ $(LDFLAGS)  $(LDLIBS)
 
 
 # Generating executable file
 %.out: $(OBJECTS)
-	@$(NQ) "Generating executable file..." $@
+	@$(NQ) "Generating executable file -> " $@
 	$(Q)$(CXX) $^ -o $(BUILD_DIR)$@ $(LDFLAGS) $(LDLIBS)
 
 
@@ -122,9 +122,7 @@ clean:
 
 
 $(BUILD_DIR):
-	@$(NQ) Creating build directory ...
 	$(Q) mkdir -p $@
-	@$(NQ) Build directory created!
 	@$(NQ) 
 
 

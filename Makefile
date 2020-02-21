@@ -68,8 +68,8 @@ else
 endif
 
 
-%.so: CFLAGS += -fPIC -shared
-%.so: CXXFLAGS += -fPIC -shared
+$(BUILD_DIR)%.so: CFLAGS += -fPIC -shared
+$(BUILD_DIR)%.so: CXXFLAGS += -fPIC -shared
 
 VPATH := $(SRC_DIR) $(BUILD_DIR)
 
@@ -95,7 +95,7 @@ $(BUILD_DIR)%.a: $(OBJECTS)
 # Create dynamic library
 $(BUILD_DIR)%.so: $(OBJECTS)
 	@$(NQ) "Generating dynamic lib file -> " $@
-	$(Q)$(CXX) $^ -o $@ $(LDFLAGS)  $(LDLIBS)
+	$(Q)$(CXX) -fPIC -shared $^ -o $@ $(LDFLAGS)  $(LDLIBS)
 
 
 # Generating executable file

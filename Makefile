@@ -122,8 +122,7 @@ clean:
 
 
 $(BUILD_DIR):
-	$(Q) mkdir -p $@
-	@$(NQ) 
+	$(Q) mkdir -p $@ 
 
 
 # Function used to check variables. Use on the command line:

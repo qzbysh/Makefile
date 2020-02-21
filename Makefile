@@ -40,7 +40,7 @@ ARFLAGS := cr
 
 # Define the installation command package
 define run_install
-  install -Dv $(BUILD_DIR)$(TARGET) -t ../bin
+  install -D $(BUILD_DIR)$(TARGET) -t ../bin
 endef
 #### END PROJECT SETTINGS ####
 
@@ -83,25 +83,25 @@ OBJECTS += $(patsubst $(SRC_DIR)%.cpp,$(BUILD_DIR)%.o, $(wildcard $(SRC_DIR)*.cp
 DEPS := $(OBJECTS:.o=.d)
 
 
-all: $(TARGET)
+all: $(BUILD_DIR)$(TARGET)
 
 
 # Create static library
-%.a: $(OBJECTS)
+$(BUILD_DIR)%.a: $(OBJECTS)
 	@$(NQ) "Generating static lib file -> " $@
-	$(Q)$(AR) $(ARFLAGS) $(BUILD_DIR)$@ $^
+	$(Q)$(AR) $(ARFLAGS) $@ $^
 
 
 # Create dynamic library
-%.so: $(OBJECTS)
+$(BUILD_DIR)%.so: $(OBJECTS)
 	@$(NQ) "Generating dynamic lib file -> " $@
-	$(Q)$(CXX) $^ -o $(BUILD_DIR)$@ $(LDFLAGS)  $(LDLIBS)
+	$(Q)$(CXX) $^ -o $@ $(LDFLAGS)  $(LDLIBS)
 
 
 # Generating executable file
-%.out: $(OBJECTS)
+$(BUILD_DIR)%.out: $(OBJECTS)
 	@$(NQ) "Generating executable file -> " $@
-	$(Q)$(CXX) $^ -o $(BUILD_DIR)$@ $(LDFLAGS) $(LDLIBS)
+	$(Q)$(CXX) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
 
 .PHONY: run

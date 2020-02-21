@@ -40,7 +40,7 @@ ARFLAGS := cr
 
 # Define the installation command package
 define run_install
-  install -DCv $(BUILD_DIR)$(TARGET) -t ../bin
+  install -Dv $(BUILD_DIR)$(TARGET) -t ../bin
 endef
 #### END PROJECT SETTINGS ####
 

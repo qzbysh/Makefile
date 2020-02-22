@@ -12,7 +12,7 @@ INCLUDES := -I. -I../include
 
 # Extra flags to give to compilers when they are supposed to invoke the linker,
 # ‘ld’, such as -L. Libraries (-lfoo) should be added to the LDLIBS variable instead. 
-LDFLAGS :=
+LDFLAGS := -Wl,-rpath,'$$ORIGIN'
 
 # Library flags or names given to compilers when they are supposed to invoke the linker, 
 # ‘ld’. LOADLIBES is a deprecated (but still supported) alternative to LDLIBS. 

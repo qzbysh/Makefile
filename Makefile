@@ -40,8 +40,8 @@ ARFLAGS := cr
 
 # Define the installation command package
 define run_install
-  @echo "install: $(BUILD_DIR)$(TARGET) -> ../bin/$(TARGET)"
-  install -Ds  ../bin/$(TARGET) $(BUILD_DIR)$(TARGET)
+  echo "install: $(BUILD_DIR)$(TARGET) -> ../bin/$(TARGET)"
+  install -Ds ../bin/$(TARGET) $(BUILD_DIR)$(TARGET)
 endef
 #### END PROJECT SETTINGS ####
 
@@ -53,10 +53,8 @@ endef
 
 ifeq ($(v),1)
     Q  =
-    NQ = true
 else
     Q  = @
-    NQ = echo
 endif
 
 
@@ -89,36 +87,36 @@ all: $(BUILD_DIR)$(TARGET)
 
 # Create static library
 $(BUILD_DIR)%.a: $(OBJECTS)
-	@$(NQ) "Generating static lib file -> " $@
+	$(Q)echo "Generating static lib file -> " $@
 	$(Q)$(AR) $(ARFLAGS) $@ $^
 
 
 # Create dynamic library
 $(BUILD_DIR)%.so: $(OBJECTS)
-	@$(NQ) "Generating dynamic lib file -> " $@
+	$(Q)echo "Generating dynamic lib file -> " $@
 	$(Q)$(CXX) -fPIC -shared $^ -o $@ $(LDFLAGS)  $(LDLIBS)
 
 
 # Generating executable file
 $(BUILD_DIR)%.out: $(OBJECTS)
-	@$(NQ) "Generating executable file -> " $@
+	$(Q)echo "Generating executable file -> " $@
 	$(Q)$(CXX) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
 
 .PHONY: run
 run:
-	$(Q)./$(BUILD_DIR)$(TARGET) || true
+	$(Q)PATH="../bin:./:$(BUILD_DIR) "; $(TARGET) || true
 
 
 .PHONY: install
 install:
-	@$(run_install)
+	$(Q)echo$(run_install)
 
 
 # Removes all build files
 .PHONY: clean
 clean: 
-	@$(NQ) "Clear build directory of $(TARGET)"
+	$(Q)echo "Clear build directory of $(TARGET)"
 	$(Q)$(RM) -r $(BUILD_DIR)
 
 
@@ -130,21 +128,21 @@ $(BUILD_DIR):
 # make print-VARNAME
 # Useful for debugging and adding features
 d-%::
-	@$(NQ) '$*=(*)'
-	@$(NQ) '	origin = $(origin *)'
-	@$(NQ) '	flavor = $(flavor *)'
-	@$(NQ) '		value = $(value  $*)'
+	$(Q)echo '$*=(*)'
+	$(Q)echo '	origin = $(origin *)'
+	$(Q)echo '	flavor = $(flavor *)'
+	$(Q)echo '		value = $(value  $*)'
 
 
 # Source file rules
 # After the first compilation they will be joined with the rules from the
 # dependency files to provide header dependencies
 $(BUILD_DIR)%.o: %.c | $(BUILD_DIR)
-	@$(NQ) "Compiling: $< -> $@"
+	$(Q)echo "Compiling: $< -> $@"
 	$(Q)$(CC) $(CFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
 
 $(BUILD_DIR)%.o: %.cpp | $(BUILD_DIR)
-	@$(NQ) "Compiling: $< -> $@"
+	$(Q)echo "Compiling: $< -> $@"
 	$(Q)$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
 
 

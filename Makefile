@@ -40,7 +40,8 @@ ARFLAGS := cr
 
 # Define the installation command package
 define run_install
-  install -D $(BUILD_DIR)$(TARGET) -t ../bin
+  @echo "install: $(BUILD_DIR)$(TARGET) -> ../bin/$(TARGET)"
+  install -Ds  ../bin/$(TARGET) $(BUILD_DIR)$(TARGET)
 endef
 #### END PROJECT SETTINGS ####
 

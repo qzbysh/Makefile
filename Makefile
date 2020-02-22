@@ -1,7 +1,7 @@
 # usage: 
 #        $ make
-#        $ make v=1     # verbose ouput
-#        $ make debug=y # debug
+#        $ make v=y	# verbose ouput
+#        $ make d=y	# debug
 
 
 # target executable file or .a or .so or .out
@@ -41,14 +41,14 @@ ARFLAGS := cr
 .SECONDARY:
 
 
-ifeq ($(v),1)
+ifeq ($(v), y)
     Q  =
 else
     Q  = @
 endif
 
 
-ifeq ($(debug), y)
+ifeq ($(d), y)
     CFLAGS += -Wall -Wextra -Wfatal-errors -D DEBUG  -g
     CXXFLAGS += -Wall -Wextra -Wfatal-errors -D DEBUG  -g
 else

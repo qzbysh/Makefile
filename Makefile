@@ -8,7 +8,7 @@
 TARGET := a.out
 
 # Add additional include paths
-INCLUDES := 
+INCLUDES := I. -I../include
 
 # Extra flags to give to compilers when they are supposed to invoke the linker,
 # ‘ld’, such as -L. Libraries (-lfoo) should be added to the LDLIBS variable instead. 
@@ -37,16 +37,6 @@ CC := gcc
 CXX := g++
 ARFLAGS := cr
 
-
-# Define the installation command package
-define run_install
-  echo "install: $(BUILD_DIR)$(TARGET) -> ../bin/$(TARGET)"
-  install -Ds ../bin/$(TARGET) $(BUILD_DIR)$(TARGET)
-endef
-#### END PROJECT SETTINGS ####
-
-
-# Generally should not need to edit below this line
 
 .SECONDARY:
 
@@ -84,6 +74,36 @@ DEPS := $(OBJECTS:.o=.d)
 
 all: $(BUILD_DIR)$(TARGET)
 
+run:
+	$(Q)PATH="../bin:./:$(BUILD_DIR) "; $(TARGET) || true
+.PHONY: run
+
+
+install:
+	$(Q)echo "install: $(BUILD_DIR)$(TARGET) -> ../bin/$(TARGET)"
+	$(Q)install -Ds ../bin/$(TARGET) $(BUILD_DIR)$(TARGET)
+.PHONY: install
+
+
+# Removes all build files
+clean: 
+	$(Q)echo "Clear build directory of $(TARGET)"
+	$(Q)$(RM) -r $(BUILD_DIR)
+.PHONY: clean
+
+$(BUILD_DIR):
+	$(Q) mkdir -p $@ 
+
+
+# Function used to check variables. Use on the command line:
+# make print-VARNAME
+# Useful for debugging and adding features
+d-%::
+	$(Q)echo '$*=(*)'
+	$(Q)echo '	origin = $(origin *)'
+	$(Q)echo '	flavor = $(flavor *)'
+	$(Q)echo '		value = $(value  $*)'
+
 
 # Create static library
 $(BUILD_DIR)%.a: $(OBJECTS)
@@ -101,37 +121,6 @@ $(BUILD_DIR)%.so: $(OBJECTS)
 $(BUILD_DIR)%.out: $(OBJECTS)
 	$(Q)echo "Generating executable file -> " $@
 	$(Q)$(CXX) $^ -o $@ $(LDFLAGS) $(LDLIBS)
-
-
-.PHONY: run
-run:
-	$(Q)PATH="../bin:./:$(BUILD_DIR) "; $(TARGET) || true
-
-
-.PHONY: install
-install:
-	$(Q)echo$(run_install)
-
-
-# Removes all build files
-.PHONY: clean
-clean: 
-	$(Q)echo "Clear build directory of $(TARGET)"
-	$(Q)$(RM) -r $(BUILD_DIR)
-
-
-$(BUILD_DIR):
-	$(Q) mkdir -p $@ 
-
-
-# Function used to check variables. Use on the command line:
-# make print-VARNAME
-# Useful for debugging and adding features
-d-%::
-	$(Q)echo '$*=(*)'
-	$(Q)echo '	origin = $(origin *)'
-	$(Q)echo '	flavor = $(flavor *)'
-	$(Q)echo '		value = $(value  $*)'
 
 
 # Source file rules

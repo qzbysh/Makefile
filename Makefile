@@ -81,7 +81,7 @@ run:
 
 install:
 	$(Q)echo "install: $(BUILD_DIR)$(TARGET) -> ../bin/$(TARGET)"
-	$(Q)install -Ds ../bin/$(TARGET) $(BUILD_DIR)$(TARGET)
+	$(Q)install -Ds -t ../bin $(BUILD_DIR)$(TARGET)
 .PHONY: install
 
 

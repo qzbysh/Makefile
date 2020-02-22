@@ -8,7 +8,7 @@
 TARGET := a.out
 
 # Add additional include paths
-INCLUDES := I. -I../include
+INCLUDES := -I. -I../include
 
 # Extra flags to give to compilers when they are supposed to invoke the linker,
 # ‘ld’, such as -L. Libraries (-lfoo) should be added to the LDLIBS variable instead. 

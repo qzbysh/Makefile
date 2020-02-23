@@ -107,7 +107,7 @@ endif
 
 .PHONY: run
 run:
-	@ PATH="./:$(CURDIR)/$(OBJDIR)"; $(TARGET) || true
+	@ $(CURDIR)/$(OBJDIR)/$(TARGET)
 
 .PHONY: install
 install:

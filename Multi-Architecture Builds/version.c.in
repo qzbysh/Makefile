@@ -1,0 +1,16 @@
+/* -*-C-*-
+ *
+ * Store the version number.  Obviously there are much simpler ways to
+ * do this; this is for illustrative purposes only.
+ */
+
+#include <stdio.h>
+
+char *version = "@VERSION@";
+
+int
+main(int argc, char **argv)
+{
+  printf("The version is `%s'.\n", version);
+  return 1;
+}

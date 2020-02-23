@@ -8,11 +8,11 @@
 
 # target executable file or .a or .so
 TARGET := a
-SRCDIR := 1
+SRCDIR := .
 OBJDIR := _build
 LDLIBS :=
 LDFLAGS :=
-INCLUDES :=
+INCLUDES := ../include
 CFLAGS := -Wall -Wextra -Wfatal-errors -std=c11
 CXXFLAGS := -Wall -Wextra -Wfatal-errors -std=c++11
 
@@ -34,11 +34,11 @@ VD: CXXFLAGS +=  -D DEBUG -g
 %.so: CFLAGS += -fPIC -shared
 %.so: CXXFLAGS += -fPIC -shared
 
-VPATH += $(SRCDIR) $(INCLUDES)
+SRCDIR :=$(TOP)/$(SRCDIR)
 SRC_C := $(notdir $(wildcard $(SRCDIR)/*.c))
 SRC_CPP := $(notdir $(wildcard $(SRCDIR)/*.cpp))
 OBJECTS := $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
-
+VPATH += $(SRCDIR)  $(addprefix $(TOP)/,$(INCLUDES))
 CFLAGS += -MP -MMD $(patsubst %,-I%,$(subst :, ,$(VPATH)))
 CXXFLAGS += -MP -MMD $(patsubst %,-I%,$(subst :, ,$(VPATH)))
 
@@ -92,7 +92,7 @@ else
 .PHONY: $(OBJDIR)
 $(OBJDIR) :
 	+@[ -d $@ ] || mkdir -p $@
-	+@$(MAKE) --no-print-directory -C $@ -f $(CURDIR)/Makefile SRCDIR=$(CURDIR)/$(SRCDIR) $(MAKECMDGOALS)
+	+@$(MAKE) --no-print-directory -C $@ -f $(CURDIR)/Makefile TOP=$(CURDIR) $(MAKECMDGOALS)
 
 Makefile : ;
 %.mk :: ;

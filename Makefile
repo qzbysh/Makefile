@@ -38,6 +38,8 @@ SRCDIR :=$(TOP)/$(SRCDIR)
 SRC_C := $(notdir $(wildcard $(SRCDIR)/*.c))
 SRC_CPP := $(notdir $(wildcard $(SRCDIR)/*.cpp))
 OBJECTS := $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
+
+LDFLAGS := $(subst -L, -L$(TOP)/, $(LDFLAGS))
 VPATH += $(SRCDIR)  $(addprefix $(TOP)/,$(INCLUDES))
 CFLAGS += -MP -MMD $(patsubst %,-I%,$(subst :, ,$(VPATH)))
 CXXFLAGS += -MP -MMD $(patsubst %,-I%,$(subst :, ,$(VPATH)))

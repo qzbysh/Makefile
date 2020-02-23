@@ -12,6 +12,7 @@ SRCDIR := 1
 OBJDIR := _build
 LDLIBS :=
 LDFLAGS :=
+INCLUDES :=
 CFLAGS = -Wall -Wextra -Wfatal-errors -std=c11
 CXXFLAGS = -Wall -Wextra -Wfatal-errors -std=c++11
 
@@ -33,8 +34,8 @@ VD: CXXFLAGS +=  -D DEBUG -g
 %.so: CFLAGS += -fPIC -shared
 %.so: CXXFLAGS += -fPIC -shared
 
-VPATH += $(SRCDIR)
-SRC_C := $(notdir $(wildcard $(SRCDIR)/*.c))
+VPATH += $(SRCDIR) $(INCLUDES)
+iiiiiiiSRC_C := $(notdir $(wildcard $(SRCDIR)/*.c))
 SRC_CPP := $(notdir $(wildcard $(SRCDIR)/*.cpp))
 OBJECTS = $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
 

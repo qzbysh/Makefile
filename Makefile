@@ -1,75 +1,71 @@
 # ------------------- usage --------------------------------
-#        $ make D				# debug
-#        $ make V				# verbose ouput
-#        $ make DV or make VD	# debug verbose ouput
-#        $ make d-VARNAME		# print-VARNAME
+#  make d=y				# debug
+#  make v=y				# verbose ouput
+#  make d-VARNAME		# print-VARNAME
+#  TARGET: exe:*, static library:*.a, dynamic library:*.so
 # ----------------------------------------------------------
-.SUFFIXES:
 
-# target executable file or .a or .so
-TARGET := a
-SRCDIR := .
-OBJDIR := _build
-LDLIBS :=
-LDFLAGS :=
-INCLUDES := ../include
-CFLAGS := -Wall -Wextra -Wfatal-errors -std=c11
+
+# ------------------- conf ---------------------------------
+TARGET   := test
+VPATH    := .
+OBJDIR   := _build
+LDLIBS   :=
+LDFLAGS  :=
+CFLAGS   := -Wall -Wextra -Wfatal-errors -std=c11
 CXXFLAGS := -Wall -Wextra -Wfatal-errors -std=c++11
+# ------------------- conf end -----------------------------
 
 
-ifneq (,$(filter _%,$(notdir $(CURDIR))))
+TOP      ?= $(CURDIR)
+VPATH    := $(abspath $(addprefix $(TOP)/, $(VPATH)))
+LDFLAGS  := $(subst -L, -L$(TOP)/, $(LDFLAGS))
+LDFLAGS  += $(addprefix -L, $(VPATH))
+CFLAGS   += -MP -MMD $(patsubst %,-I%,$(subst :, , $(VPATH)))
+CXXFLAGS += -MP -MMD $(patsubst %,-I%,$(subst :, , $(VPATH)))
+SRC_C    := $(notdir $(wildcard $(addsuffix /*.c, $(VPATH))))
+SRC_CPP  := $(notdir $(wildcard $(addsuffix /*.cpp, $(VPATH))))
+OBJECTS  := $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
 
-
-Q := @
-
-V: Q :=
-D: CFLAGS += -D DEBUG -g
-D: CXXFLAGS +=  -D DEBUG -g
-DV: Q :=
-DV: CFLAGS += -D DEBUG -g
-DV: CXXFLAGS +=  -D DEBUG -g
-VD: Q :=
-VD: CFLAGS += -D DEBUG -g
-VD: CXXFLAGS +=  -D DEBUG -g
-%.so: CFLAGS += -fPIC -shared
+%.so: CFLAGS   += -fPIC -shared
 %.so: CXXFLAGS += -fPIC -shared
 
-SRCDIR :=$(TOP)/$(SRCDIR)
-SRC_C := $(notdir $(wildcard $(SRCDIR)/*.c))
-SRC_CPP := $(notdir $(wildcard $(SRCDIR)/*.cpp))
-OBJECTS := $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
 
-LDFLAGS := $(subst -L, -L$(TOP)/, $(LDFLAGS))
-VPATH += $(SRCDIR)  $(addprefix $(TOP)/,$(INCLUDES))
-CFLAGS += -MP -MMD $(patsubst %,-I%,$(subst :, ,$(VPATH)))
-CXXFLAGS += -MP -MMD $(patsubst %,-I%,$(subst :, ,$(VPATH)))
+ifneq ($(v), y)
+    Q := @
+endif
 
-TARGET_SUFFIX := $(suffix $(TARGET))
-ifdef TARGET_SUFFIX
-    TARGET_T := $(TARGET)
-else
+ifeq ($(d), y)
+    CFLAGS   += -D DEBUG -g
+    CXXFLAGS += -D DEBUG -g
+endif
+
+ifeq ($(suffix $(TARGET)),)
     TARGET_T := $(TARGET).out
+else
+    TARGET_T := $(TARGET)
 endif
 
 
+.PHONY: $(OBJDIR) all run install clean
 .SECONDARY: $(OBJECTS)
-.PHONY: all V D DV VD
+
+ifeq ($(filter _%,$(notdir $(CURDIR))),)
+$(OBJDIR):
+	+@[ -d $@ ] || mkdir -p $@
+	+@$(MAKE) -C $@ -r --no-print-directory -f $(CURDIR)/Makefile TOP=$(CURDIR) $(MAKEOVERRIDES)
+endif
 
 all: $(TARGET_T)
 
-V D DV VD: all
-
-# Create static library
 %.a: $(OBJECTS)
 	@ echo "Generating static lib file -> " $@
 	$(Q) $(AR) cr $@ $^
 
-# Create dynamic library
 %.so: $(OBJECTS)
 	@ echo "Generating dynamic lib file -> " $@
 	$(Q) $(CXX) -fPIC -shared $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-# Generating executable file
 %.out: $(OBJECTS)
 	@ echo "Generating executable file -> " $*
 	$(Q) $(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $*
@@ -77,47 +73,27 @@ V D DV VD: all
 %.o: %.c
 	@ echo "Compiling: $< -> $(BUILD_DIR)/$@"
 	$(Q) $(CC) $(CFLAGS) -c -o $@  $<
+
 %.o: %.cpp
 	@ echo "Compiling: $< -> $(BUILD_DIR)/$@"
 	$(Q) $(CXX) $(CXXFLAGS) -c -o $@ $<
 
-d-%::
-	@ echo '$*=(*)'
-	@ echo '	origin = $(origin *)'
-	@ echo '	flavor = $(flavor *)'
-	@ echo '		value = $(value  $*)'
-
-
-else
-
-
-.PHONY: $(OBJDIR)
-$(OBJDIR) :
-	+@[ -d $@ ] || mkdir -p $@
-	+@$(MAKE) --no-print-directory -C $@ -f $(CURDIR)/Makefile TOP=$(CURDIR) $(MAKECMDGOALS)
-
-Makefile : ;
-%.mk :: ;
-
-% :: $(OBJDIR) ;
-
-
-endif
-
-
-.PHONY: run
 run:
-	@ $(CURDIR)/$(OBJDIR)/$(TARGET)
+	$(Q) $(CURDIR)/$(OBJDIR)/$(TARGET)
 
-.PHONY: install
 install:
 	@ echo "install: $(OBJDIR)$(TARGET) -> ../bin/$(TARGET)"
-	@ install -Ds -t ../bin $(OBJDIR)$(TARGET)
+	$(Q) install -Ds -t ../bin $(OBJDIR)$(TARGET)
 
-.PHONY: clean
-clean: 
+clean:
 	@ echo "Clear build directory of $(TARGET)"
-	@ $(RM) -r $(OBJDIR)
+	$(Q) $(RM) -r $(OBJDIR)
+
+d-%::
+	$(Q) echo '$*=(*)'
+	$(Q) echo '    origin = $(origin *)'
+	$(Q) echo '    flavor = $(flavor *)'
+	$(Q) echo '        value = $(value  $*)'
 
 
 # Add dependency files, if they exist

@@ -82,8 +82,8 @@ run:
 	$(Q) $(CURDIR)/$(OBJDIR)/$(TARGET)
 
 install:
-	@ echo "install: $(OBJDIR)$(TARGET) -> ../bin/$(TARGET)"
-	$(Q) install -Ds -t ../bin $(OBJDIR)$(TARGET)
+	@ echo "install: $(OBJDIR)$(TARGET) -> ../lib/$(TARGET)"
+	$(Q) install -Ds -t ../lib $(OBJDIR)/$(TARGET)
 
 clean:
 	@ echo "Clear build directory of $(TARGET)"

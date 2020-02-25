@@ -82,7 +82,7 @@ run:
 	$(Q) $(CURDIR)/$(OBJDIR)/$(TARGET)
 
 install:
-	@ echo "install: $(OBJDIR)$(TARGET) -> ../lib/$(TARGET)"
+	@ echo "install: $(OBJDIR)/$(TARGET) -> ../lib/$(TARGET)"
 	$(Q) install -Ds -t ../lib $(OBJDIR)/$(TARGET)
 
 clean:

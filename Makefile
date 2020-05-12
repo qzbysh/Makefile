@@ -64,11 +64,11 @@ all: $(TARGET_T)
 
 %.so: $(OBJECTS)
 	@ echo "Generating dynamic lib file -> " $@
-	$(Q) $(CXX) -fPIC -shared $(LDFLAGS) $^ $(LDLIBS) -o $@
+	$(Q) $(CXX) -fPIC -shared $(LDFLAGS) $(LDLIBS) $^ -o $@
 
 %.out: $(OBJECTS)
 	@ echo "Generating executable file -> " $*
-	$(Q) $(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $*
+	$(Q) $(CXX) $(LDFLAGS) $(LDLIBS) $^ -o $*
 
 %.o: %.c
 	@ echo "Compiling: $< -> $(BUILD_DIR)/$@"

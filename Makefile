@@ -38,6 +38,9 @@ endif
 ifeq ($(d), y)
     CFLAGS   += -D DEBUG -g
     CXXFLAGS += -D DEBUG -g
+else
+    CFLAGS   += -o2
+    CXXFLAGS += -o2
 endif
 
 ifeq ($(suffix $(TARGET)),)

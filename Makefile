@@ -27,6 +27,7 @@ SRC_C    := $(notdir $(wildcard $(addsuffix /*.c, $(VPATH))))
 SRC_CPP  := $(notdir $(wildcard $(addsuffix /*.cpp, $(VPATH))))
 OBJECTS  := $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
 
+%.a: A_LDLIBS = $(patsubst -l:%,../%,$(LDLIBS))
 %.so: CFLAGS   += -fPIC -shared
 %.so: CXXFLAGS += -fPIC -shared
 
@@ -61,9 +62,10 @@ endif
 
 all: $(TARGET_T)
 
-%.a: $(OBJECTS)
+%.a: $(OBJECTS) $(A_LDLIBS)
 	@ echo "Generating static lib file -> " $@
-	$(Q) $(AR) cr $@ $^
+	$(Q) $(AR) cx $(A_LDLIBS)
+	$(Q) $(AR) cr  $@ *.o
 
 %.so: $(OBJECTS)
 	@ echo "Generating dynamic lib file -> " $@

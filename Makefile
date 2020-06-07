@@ -69,7 +69,7 @@ all: $(TARGET_T)
 
 %.so: $(OBJECTS)
 	@ echo "Generating dynamic lib file -> " $@
-	$(Q) $(CXX) -fPIC -shared $(LDFLAGS) $(LDLIBS) $^ -o $@
+	$(Q) $(CXX) -fPIC -shared $^ -o $@
 
 %.out: $(OBJECTS)
 	@ echo "Generating executable file -> " $*
